@@ -17,10 +17,10 @@ jobs:
           brew install xcodegen
           gem install cocoapods --no-document || sudo gem install cocoapods --no-document
 
-      - name: Download game resources
+      - name: Prepare game resources
         run: |
-          echo "下载游戏资源包..."
-          curl -sL --retry 3 -o www.zip "http://123.207.197.63:8081/__www.zip"
+          echo "合并资源分卷..."
+          cat www_parts/www.part_* > www.zip
           ls -lh www.zip
           mkdir -p KinkyDungeonApp/www
           unzip -q www.zip -d KinkyDungeonApp/www
