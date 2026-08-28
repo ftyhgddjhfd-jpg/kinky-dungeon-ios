@@ -160591,8 +160591,8 @@ let Hardpoints = {
     },
 };
 let LAYER_INCREMENT = 500;
-let MODELHEIGHT = 1750;
-let MODELWIDTH = 1240;
+let MODELHEIGHT = 3500;
+let MODELWIDTH = 2480;
 let MODEL_SCALE = 1000 / MODELHEIGHT;
 let MODEL_XOFFSET = Math.floor((-MODELWIDTH * MODEL_SCALE) / 2);
 let ARMPOSES = ["Free", "Boxtie", "Wristtie", "Yoked", "Front", "Up", "Crossed"];
