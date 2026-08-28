@@ -12,30 +12,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install XcodeGen
-        run: brew install xcodegen
+      - name: Install XcodeGen & CocoaPods
+        run: |
+          brew install xcodegen
+          gem install cocoapods --no-document || sudo gem install cocoapods --no-document
 
       - name: Download game resources
         run: |
           echo "下载游戏资源包..."
-          curl -sL -o www.zip "http://123.207.197.63:8081/__www.zip"
+          curl -sL --retry 3 -o www.zip "http://123.207.197.63:8081/__www.zip"
           ls -lh www.zip
           mkdir -p KinkyDungeonApp/www
           unzip -q www.zip -d KinkyDungeonApp/www
-          # zip 内若含顶层目录则上移
           if [ -d "KinkyDungeonApp/www/html-classic.itch.zone" ]; then
             mv KinkyDungeonApp/www/html-classic.itch.zone/html/15253691-1557146/* KinkyDungeonApp/www/ 2>/dev/null || true
             rm -rf KinkyDungeonApp/www/html-classic.itch.zone
           fi
-          ls KinkyDungeonApp/www | head
+          ls KinkyDungeonApp/www | head -5
           du -sh KinkyDungeonApp/www
 
-      - name: Generate Xcode project
-        run: xcodegen generate
+      - name: Generate project & install pods
+        run: |
+          xcodegen generate
+          pod install
 
       - name: Build (no codesign)
         run: |
-          xcodebuild -project KinkyDungeonApp.xcodeproj \
+          xcodebuild -workspace KinkyDungeonApp.xcworkspace \
             -scheme KinkyDungeonApp \
             -configuration Release \
             -destination 'generic/platform=iOS' \
@@ -47,7 +50,6 @@ jobs:
         run: |
           mkdir -p Payload
           cp -r build/Build/Products/Release-iphoneos/KinkyDungeonApp.app Payload/
-          # 去除无用架构（可选）
           zip -qry KinkyDungeon.ipa Payload/
           ls -lh KinkyDungeon.ipa
 
