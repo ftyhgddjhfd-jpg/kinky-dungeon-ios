@@ -1,0 +1,30 @@
+name: KinkyDungeonApp
+options:
+  bundleIdPrefix: com.kinkydungeon
+  deploymentTarget:
+    iOS: "14.0"
+packages:
+  GCDWebServer:
+    url: https://github.com/swisspol/GCDWebServer
+    from: 3.5.4
+targets:
+  KinkyDungeonApp:
+    type: application
+    platform: iOS
+    sources:
+      - KinkyDungeonApp
+    resources:
+      - KinkyDungeonApp/www
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.kinkydungeon.app
+        TARGETED_DEVICE_FAMILY: 1,2
+        INFOPLIST_FILE: KinkyDungeonApp/Info.plist
+        CODE_SIGNING_ALLOWED: NO
+        CODE_SIGN_IDENTITY: ""
+        SWIFT_VERSION: "5.0"
+        SUPPORTS_MACCATALYST: NO
+    dependencies:
+      - package: GCDWebServer
+    scheme:
+      testTargets: []

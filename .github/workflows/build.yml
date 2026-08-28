@@ -1,0 +1,58 @@
+name: Build IPA
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Download game resources
+        run: |
+          echo "下载游戏资源包..."
+          curl -sL -o www.zip "https://123.207.197.63:8082/www.zip" || curl -sL -o www.zip "http://123.207.197.63:8082/www.zip"
+          ls -lh www.zip
+          mkdir -p KinkyDungeonApp/www
+          unzip -q www.zip -d KinkyDungeonApp/www
+          # zip 内若含顶层目录则上移
+          if [ -d "KinkyDungeonApp/www/html-classic.itch.zone" ]; then
+            mv KinkyDungeonApp/www/html-classic.itch.zone/html/15253691-1557146/* KinkyDungeonApp/www/ 2>/dev/null || true
+          fi
+          ls KinkyDungeonApp/www | head
+          du -sh KinkyDungeonApp/www
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build (no codesign)
+        run: |
+          xcodebuild -project KinkyDungeonApp.xcodeproj \
+            -scheme KinkyDungeonApp \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Package IPA
+        run: |
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-iphoneos/KinkyDungeonApp.app Payload/
+          # 去除无用架构（可选）
+          zip -qry KinkyDungeon.ipa Payload/
+          ls -lh KinkyDungeon.ipa
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KinkyDungeon-ipa
+          path: KinkyDungeon.ipa
+          retention-days: 14
