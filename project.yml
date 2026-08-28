@@ -21,5 +21,8 @@ targets:
         SWIFT_VERSION: "5.0"
         SUPPORTS_MACCATALYST: NO
         IPHONEOS_DEPLOYMENT_TARGET: "14.0"
+    dependencies: []
+    cocoapods:
+      enabled: true
     scheme:
       testTargets: []
