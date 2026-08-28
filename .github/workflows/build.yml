@@ -18,13 +18,14 @@ jobs:
       - name: Download game resources
         run: |
           echo "下载游戏资源包..."
-          curl -sL -o www.zip "https://123.207.197.63:8082/www.zip" || curl -sL -o www.zip "http://123.207.197.63:8082/www.zip"
+          curl -sL -o www.zip "http://123.207.197.63:8081/__www.zip"
           ls -lh www.zip
           mkdir -p KinkyDungeonApp/www
           unzip -q www.zip -d KinkyDungeonApp/www
           # zip 内若含顶层目录则上移
           if [ -d "KinkyDungeonApp/www/html-classic.itch.zone" ]; then
             mv KinkyDungeonApp/www/html-classic.itch.zone/html/15253691-1557146/* KinkyDungeonApp/www/ 2>/dev/null || true
+            rm -rf KinkyDungeonApp/www/html-classic.itch.zone
           fi
           ls KinkyDungeonApp/www | head
           du -sh KinkyDungeonApp/www
