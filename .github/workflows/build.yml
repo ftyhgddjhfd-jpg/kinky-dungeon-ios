@@ -28,6 +28,8 @@ jobs:
             mv KinkyDungeonApp/www/html-classic.itch.zone/html/15253691-1557146/* KinkyDungeonApp/www/ 2>/dev/null || true
             rm -rf KinkyDungeonApp/www/html-classic.itch.zone
           fi
+          # 用仓库内的 main.js 覆盖（已修正 MODELWIDTH/HEIGHT 适配压缩纹理）
+          cp main.js KinkyDungeonApp/www/out/main.js
           ls KinkyDungeonApp/www | head -5
           du -sh KinkyDungeonApp/www
 
