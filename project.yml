@@ -8,7 +8,9 @@ targets:
     type: application
     platform: iOS
     sources:
-      - KinkyDungeonApp
+      - path: KinkyDungeonApp
+        excludes:
+          - www
     # www 资源不参与 Xcode 编译（避免重名冲突），构建后由 workflow 手动拷贝进 App
     settings:
       base:
