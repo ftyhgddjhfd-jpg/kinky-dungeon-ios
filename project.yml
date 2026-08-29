@@ -10,7 +10,8 @@ targets:
     sources:
       - KinkyDungeonApp
     resources:
-      - KinkyDungeonApp/www
+      - path: KinkyDungeonApp/www
+        type: folder
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.kinkydungeon.app
