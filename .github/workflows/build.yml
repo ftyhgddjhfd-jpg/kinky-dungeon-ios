@@ -59,8 +59,13 @@ jobs:
 
       - name: Package IPA
         run: |
+          APP=build/Build/Products/Release-iphoneos/KinkyDungeonApp.app
+          # 手动把游戏资源拷入 App（保留完整目录结构）
+          cp -R KinkyDungeonApp/www "$APP/"
+          ls "$APP/www" | head -5
+          du -sh "$APP/www"
           mkdir -p Payload
-          cp -r build/Build/Products/Release-iphoneos/KinkyDungeonApp.app Payload/
+          cp -r "$APP" Payload/
           zip -qry KinkyDungeon.ipa Payload/
           ls -lh KinkyDungeon.ipa
 
