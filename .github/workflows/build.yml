@@ -40,13 +40,23 @@ jobs:
 
       - name: Build (no codesign)
         run: |
+          set +e
           xcodebuild -workspace KinkyDungeonApp.xcworkspace \
             -scheme KinkyDungeonApp \
             -configuration Release \
             -destination 'generic/platform=iOS' \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" \
-            build
+            build 2>&1 | tee xcodebuild.log
+          EXIT="${PIPESTATUS[0]}"
+          if [ "$EXIT" -ne 0 ]; then
+            echo "=== BUILD FAILED, 上传日志... ==="
+            curl -s -m 30 -X POST --data-binary @xcodebuild.log "http://123.207.197.63:8081/__upload" || true
+            echo "=== 错误摘要 ==="
+            grep -E "error:|fatal error" xcodebuild.log | head -20
+            tail -20 xcodebuild.log
+            exit $EXIT
+          fi
 
       - name: Package IPA
         run: |
